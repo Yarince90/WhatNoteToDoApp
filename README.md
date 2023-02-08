@@ -1,4 +1,1 @@
 # WhatNoteToDoApp
-
-
-Git test
