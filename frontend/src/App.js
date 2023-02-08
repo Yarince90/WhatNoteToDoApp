@@ -2,29 +2,10 @@ import React, { useState } from "react";
 import './App.css';
 import Header from './components/header/Header';
 import Note from "./components/note/Note";
+import CreateNote from "./components/createNote/CreateNote";
 
 function App() {
   const [notes, setNotes] = useState([]);
-  const [isExpanded, setExpanded] = useState(false);
-    const [note, setNote] = useState({
-        title: "",
-        content: ""
-    });
-
-    function expand(){
-        setExpanded(true);
-      }
-
-    function handleChange(e){
-        const{ name, value } = e.target;
-
-        setNote(prevNote => {
-            return {
-                ...prevNote,
-                [name]: value
-            };
-        });
-    }
   
   function addNote(newNote) {
     setNotes(prevNotes => {
@@ -40,30 +21,27 @@ function App() {
   //   });
   // }
 
+  function testClick () {
+    var windowBody = window
+    var popover = document.getElementsByClassName('createNote')
+    windowBody?.addEventListener('click', function(event){ 
+        if(popover === event.target) {
+          console.log("clicked on the div")
+        }
+        if(popover !== event.target) {
+          console.log("clicked outside the div")
+        }
+    })}
 
 
 
   return (
     <div className="App">
       <Header />
-      <form className="createNote">
-            {isExpanded && (
-             <input 
-               name="title"
-               onChange={handleChange}
-               value={note.title}
-               placeholder="Title"
-             />
-            )}
-             <textarea
-              name="content"
-              onMouseOver={expand}
-              onChange={handleChange}
-              value={note.content}
-              placeholder="Add note ..."
-              rows={isExpanded ? 3 : 1}
-              />
-      </form>
+      <CreateNote 
+        onAdd={addNote}
+        clickTester={testClick}
+      />
       {notes.map((noteItem, index) => {
         return(
           <Note
