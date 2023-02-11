@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import Fab from '@mui/material/Fab';
+import Zoom from '@mui/material/Zoom';
+import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import './createNote.css';
 
 function CreateNote(props) {
@@ -8,15 +11,27 @@ function CreateNote(props) {
           content: ""
       });
 
-      function expand(){
-          setExpanded(true);
-      }
-      
-      function contract(){
-        setExpanded(false);
-      }
+    //useState functions to change row size on text area
+    function expand(){
+      setExpanded(true);
+    }
+    
+    function contract(){
+      setExpanded(false);
+    }
 
-      function handleChange(e){
+    //Add Focus
+    function addFocus(){
+      let createNoteEl = document.getElementsByClassName('createNote');
+      
+      for(let i = 0; i < createNoteEl.length; i++){
+        createNoteEl[i].focus();
+      }
+      expand();
+
+    }
+
+    function handleChange(e){
           const{ name, value } = e.target;
 
           setNote(prevNote => {
@@ -27,28 +42,41 @@ function CreateNote(props) {
           });
       }
 
+      function submitNote(event) {
+        props.onAdd(note);
+        setNote({
+          title: "",
+          content: ""
+        });
+        event.preventDefault();
+      }
+
     return(
       <form className="createNote">
         {isExpanded && (
-          <input 
+          <input className="createNote"
             name="title"
             onChange={handleChange}
             value={note.title}
             placeholder="Title"
           />
           )}
-          <textarea
+          <textarea className="createNote"
             name="content"
-            onFocus={expand}
-            onBlur={contract}
+            onClick={addFocus}
             onChange={handleChange}
             value={note.content}
             placeholder="Add note ..."
             rows={isExpanded ? 3 : 1}
             />
+            <Zoom in={isExpanded}>
+              <Fab onClick={submitNote}>
+                <AddCircleRoundedIcon />
+              </Fab>
+            </Zoom>
+            
         </form>
     )
-    
 }
 
 export default CreateNote;
