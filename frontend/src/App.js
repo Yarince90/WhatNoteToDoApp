@@ -31,7 +31,6 @@ let isFocused = false;
 
   function handleChange(e){
     const{ name, value } = e.target;
-
     setNote(prevNote => {
         return {
             ...prevNote,
@@ -53,13 +52,9 @@ function submitNote(event) {
   document.body.addEventListener('click', function(e){
       if (e.target.classList.contains('createNote')){
         isFocused = true;
-        console.log("createNote Area Clicked!!!");
-        setExpanded(true);
       }
-
-      else if (!e.target.classList.contains('createNote')){
+      else {
         isFocused = false;
-        console.log('Not Clicked');
         setExpanded(false);
       }
   })
@@ -67,8 +62,6 @@ function submitNote(event) {
   function handleFocus(){
     if(isFocused){
       setExpanded(true);
-    } else {
-      setExpanded(false);
     }
   }
 
