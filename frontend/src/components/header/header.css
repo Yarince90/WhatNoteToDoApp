@@ -1,5 +1,5 @@
 header {
-    background-color: #f5ba13;
+    background-color: #FFEA20;
     margin: -10px -10px;
     padding: 16px 32px;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
@@ -9,4 +9,25 @@ header {
     color: #fff;
     font-family: "McLaren", cursive;
     font-weight: 200;
+  }
+
+  .logoContainer {
+    height: 100%;
+    width: 70px;
+    padding: 25px;
+  }
+
+  .linksContainer {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 25px;
+  }
+
+  .navLink {
+    padding: 10px 15px;
+    text-decoration: none;
+    cursor: pointer;
   }

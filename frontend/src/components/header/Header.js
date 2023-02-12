@@ -6,10 +6,11 @@ function Header() {
     return (
         <Fragment>
             <header>
-                <div>
-                <Link to='/'>Home</Link>
-                </div>
-
+                <Link to='/'>
+                    <div className="logoContainer">
+                        Home
+                    </div>
+                </Link>
                 <div className="linksContainer">
                     <Link className="navLink" to='/noteKeeper'>Note Keeper</Link>
                     <Link className="navLink" to='/toDoList'>To Do List</Link>
