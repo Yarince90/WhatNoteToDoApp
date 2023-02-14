@@ -1,5 +1,5 @@
 header {
-    background-color: #FFEA20;
+    background-color: #9900ff;
     margin: -10px -10px;
     padding: 16px 32px;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
@@ -8,26 +8,35 @@ header {
   header h1 {
     color: #fff;
     font-family: "McLaren", cursive;
-    font-weight: 200;
-  }
-
-  .logoContainer {
-    height: 100%;
-    width: 70px;
-    padding: 25px;
+    font-weight: 50;
   }
 
   .linksContainer {
-    width: 50%;
-    height: 100%;
     display: flex;
-    align-items: center;
-    justify-content: flex-end;
+    padding-top: 25px;
     padding-bottom: 25px;
   }
 
+  .link-item-01{
+    display: flex;
+    flex-grow: 2;
+    
+  }
+  .link-item-02{
+    display: flex;
+    justify-content: center;
+    flex-grow: 2;
+    
+  }
+  .link-item-03{
+    display: flex;
+    flex-grow: 2;
+    justify-content: flex-end;
+    
+  }
+
   .navLink {
-    padding: 10px 15px;
+    padding: 25px 25px 15px 10px;
     text-decoration: none;
     cursor: pointer;
   }

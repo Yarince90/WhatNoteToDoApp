@@ -6,16 +6,18 @@ function Header() {
     return (
         <Fragment>
             <header>
-                <Link to='/'>
-                    <div className="logoContainer">
-                        Home
-                    </div>
-                </Link>
                 <div className="linksContainer">
-                    <Link className="navLink" to='/noteKeeper'>Note Keeper</Link>
-                    <Link className="navLink" to='/toDoList'>To Do List</Link>
-                    <Link className="navLink" to='/logIn'>Login</Link>
-                    <Link className="navLink" to='/register'>Register</Link>
+                    <div className="link-item-01">
+                        <Link className="navLink" to='/'><h1>Home</h1></Link>
+                    </div>
+                    <div className="link-item-02">
+                        <Link className="navLink" to='/noteKeeper'><h1>Note Keeper</h1></Link>
+                        <Link className="navLink" to='/toDoList'><h1>To Do List</h1></Link>
+                    </div>
+                    <div className="link-item-03">
+                        <Link className="navLink" to='/logIn'><h1>Login</h1></Link>
+                        <Link className="navLink" to='/register'><h1>Register</h1></Link>
+                    </div>
                 </div>
             </header>
             <Outlet />

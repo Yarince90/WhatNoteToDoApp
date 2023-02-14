@@ -1,5 +1,6 @@
 import React from "react";
 import DeleteIcon from '@mui/icons-material/Delete';
+import '../note/note.css';
 
 function Note(props) {
     
