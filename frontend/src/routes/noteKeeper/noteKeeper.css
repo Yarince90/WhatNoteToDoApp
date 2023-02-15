@@ -31,3 +31,11 @@ form.createNote {
     cursor: pointer;
     outline: none;
   }
+
+  input:focus::placeholder {
+    color: transparent;
+  }
+
+  textarea:focus::placeholder {
+    color: transparent;
+  }

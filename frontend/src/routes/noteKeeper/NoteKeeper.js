@@ -14,22 +14,9 @@ function NoteKeeper() {
     content: ""
 });
 let isFocused = false;
-
-  function addNote(newNote) {
-    setNotes(prevNotes => {
-      return [...prevNotes, newNote];
-    });
-  }
-
-  function deleteNote(id) {
-    setNotes(prevNotes => {
-      return prevNotes.filter((noteItem, index) => {
-        return index !== id;
-      });
-    });
-  }
-
-  function handleChange(e){
+  
+//Handle Create Note Area text change  
+function handleChange(e){
     const{ name, value } = e.target;
     setNote(prevNote => {
         return {
@@ -39,6 +26,14 @@ let isFocused = false;
     });
 }
 
+//Add to Note Array 
+function addNote(newNote) {
+  setNotes(prevNotes => {
+    return [...prevNotes, newNote];
+  });
+}
+
+//Add to note array and set Create Note Area to empty
 function submitNote(event) {
   addNote(note);
   setNote({
@@ -48,7 +43,16 @@ function submitNote(event) {
   event.preventDefault();
 }
 
-  //------------------------------Handle focus -------------------------------------
+  //Delete single note
+  function deleteNote(id) {
+    setNotes(prevNotes => {
+      return prevNotes.filter((noteItem, index) => {
+        return index !== id;
+      });
+    });
+  }
+
+  // Handle Focus for Create Note area (expand and retract rows)
   document.body.addEventListener('click', function(e){
       if (e.target.classList.contains('createNote')){
         isFocused = true;
@@ -59,6 +63,9 @@ function submitNote(event) {
       }
   })
 
+  function setChange() {
+    isFocused = true;
+  }
   function handleFocus(){
     if(isFocused){
       setExpanded(true);
@@ -67,6 +74,7 @@ function submitNote(event) {
 
   return(
     <Fragment>
+      {/* Create Note Area */}
         <form className="createNote">
         {isExpanded && (
           <input className="createNote"
@@ -79,6 +87,7 @@ function submitNote(event) {
           <textarea className="createNote"
             name="content"
             onClick={handleFocus}
+            onMouseOver={setChange}
             onChange={handleChange}
             value={note.content}
             placeholder="Add note ..."
@@ -90,7 +99,7 @@ function submitNote(event) {
               </Fab>
             </Zoom>
         </form>
-    
+      {/* Return notes array */}
       {notes.map((noteItem, index) => {
         return(
           <Note
