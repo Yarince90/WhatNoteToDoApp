@@ -17,7 +17,6 @@ app.use('/api/users', usersRoutes);
 app.use('/api/noteKeeper', notesRoute);
 
 
-
 // Error handling
 app.use((req, res, next)=>{
     const error = new HttpError('Could not find route', 404);
