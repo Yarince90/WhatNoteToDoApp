@@ -4,16 +4,6 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const HttpError = require('../models/http-errors');
 
-//get All users
-const getUser = (req, res, next) => {
-console.log('Connected to users!')
-}
-
-//Log user into account
-const logIn = (req, res, next) => {
-
-}
-
 //Create user account
 const register = async (req, res, next) => {
     const { userName, email, password } = req.body;
@@ -84,10 +74,68 @@ const register = async (req, res, next) => {
 
     //Server response
     res.status(201)
-    .json({userId: createUser.id, email: createUser.email, token: token})
+    .json({userId: createUser.id, email: createUser.email, token: token});
 }
 
+//Look for user
+const logIn = async (req, res, next) => {
+    const { email, password } = req.body;
 
-exports.getUser = getUser;
+    //Look for existing user
+    let existingUser;
+    try {
+        existingUser = await User.findOne({ email: email });
+    } catch (err) {
+        const error = new HttpError(
+            'Logging in failed, please try again later.', 500
+            );
+            return next(error);
+    }
+
+    if (!existingUser) {
+        const error = new HttpError(
+            'Invalid username or password', 403
+          );
+          return next(error);
+    }
+
+    //Compare entered password
+    let correctPassword = false
+    try  {
+        correctPassword = await bcrypt.compare(password, existingUser.password);
+    } catch (err) {
+        const error = new HttpError(
+          'Logging in failed, please try again later.', 500
+        );
+        return next(error);
+      }
+
+      if (!correctPassword) {
+        const error = new HttpError(
+            'Invalid username or password.', 403
+          );
+          return next(error);
+      }
+
+      //create Token
+      let token;
+      try {
+        token = jwt.sign(
+            { userId: existingUser.id, email: existingUser.email},
+            'SuperSecretCode_DO_NOT_SHARE',
+            {   expiresIn: '1h' }
+        );
+      } catch (err) {
+        const error = new HttpError(
+          'Logging in failed, please try again later.', 500
+        );
+        return next(error);
+      }
+
+      //Server response
+    res.status(201)
+    .json({userId: createUser.id, email: createUser.email, token: token});
+}
+
 exports.logIn = logIn;
 exports.register = register;

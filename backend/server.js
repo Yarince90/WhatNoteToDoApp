@@ -13,7 +13,6 @@ app.use(bodyParser.json());
 
 //Routes
 app.use('/api/users', usersRoutes);
-
 app.use('/api/noteKeeper', notesRoute);
 
 
