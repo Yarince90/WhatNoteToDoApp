@@ -1,0 +1,8 @@
+.btn-class {
+    background-color: rgb(53, 163, 253);
+    color: white;
+    width: 100px;
+    border: none;
+    border-radius: 5%;
+    cursor: pointer;
+}
