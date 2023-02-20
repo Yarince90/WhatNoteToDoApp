@@ -11,7 +11,7 @@ function LogIn(){
                 name="userName"
                 // onChange={handleChange}
                 // value={user.userName}
-                placeholder="Username / email"
+                placeholder="Email"
                 />
                   <input className="password"
                 name="password"

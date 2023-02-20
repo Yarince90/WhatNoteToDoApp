@@ -39,7 +39,6 @@ const register = async (req, res, next) => {
           return next(error);
     }
 
-
     //Create new user
     const createUser = new User ({
         email,
@@ -134,7 +133,7 @@ const logIn = async (req, res, next) => {
 
       //Server response
     res.status(201)
-    .json({userId: createUser.id, email: createUser.email, token: token});
+    .json({userId: existingUser.id, email: existingUser.email, token: token});
 }
 
 exports.logIn = logIn;

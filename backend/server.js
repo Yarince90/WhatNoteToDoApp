@@ -11,6 +11,17 @@ const app = express();
 
 app.use(bodyParser.json());
 
+//Set headers
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader(
+      'Access-Control-Allow-Headers',
+      'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+    );
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
+    next();
+  });
+
 //Routes
 app.use('/api/users', usersRoutes);
 app.use('/api/noteKeeper', notesRoute);
@@ -30,6 +41,7 @@ app.use((err, req, res, next) => {
     res.json({message: err.message ||"An unknown error occurred"});
 })
 
+//DB/Server Connection
 mongoose.set("strictQuery", false);
 mongoose
 .connect(process.env.DB_CONNECTION)

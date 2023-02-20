@@ -1,5 +1,7 @@
 import React from "react";
-import { Routes, Route } from 'react-router-dom'; 
+import { Routes, Route } from 'react-router-dom';
+import { AuthContext } from './context/auth-context';
+import { useAuth } from './hooks/auth-hook';
 import './App.css';
 import Header from "./components/header/Header";
 import Home from './routes/home/Home';
@@ -10,8 +12,19 @@ import Register from "./routes/register/Register";
 
 
 function App() {
+  const { token, login, logout, userId } = useAuth();
+
+
   return (
     <div className="App">
+      <AuthContext.Provider 
+      value={{
+        isLoggedIn: !!token,
+        token: token,
+        userId: userId,
+        login: login,
+        logout: logout
+      }}>
       <Routes>
         <Route path="/" element={<Header />}>
           <Route index element={<Home/>}/>
@@ -21,6 +34,7 @@ function App() {
           <Route path="register" element={<Register/>}/>
         </Route>
       </Routes>
+      </AuthContext.Provider>
     </div>
   );
 }
