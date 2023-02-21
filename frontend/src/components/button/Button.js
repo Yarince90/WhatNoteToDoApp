@@ -8,7 +8,7 @@ function Button(props){
 
     return(
         <Fragment>
-            <button type="button" className="btn-class"><p>{props.btnName}</p></button>
+            <button className="btn-class"><p>{props.btnName}</p></button>
         </Fragment>    
     )
 }

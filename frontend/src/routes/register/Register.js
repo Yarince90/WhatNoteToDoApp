@@ -1,46 +1,49 @@
 import React, { useState, Fragment, useContext } from "react";
-import { useHttpClient } from "../../hooks/http-hook";
+import { AuthContext } from "../../context/auth-context";
 import Button from "../../components/button/Button";
 import './register.css';
-import { AuthContext } from "../../context/auth-context";
+
 
 function Register(){
     const auth = useContext(AuthContext);
-    const [ sendRequest ] = useHttpClient();
     const [newUser, setNewUser] = useState({
         userName: "",
         email: "",
         password: ""
     });
 
-
-
     function handleChange(e){
         const{ name, value } = e.target;
-        setNewUser(prevNote => {
+        setNewUser( prev => {
             return {
-                ...prevNote,
+                ...prev,
                 [name]: value
             };
         });
     }
-
-
-
-    
-    const registerUser = async (event) => {
-        
-        
-           
+    //Send new user info to backend
+    async function registerUser (event) {
+        event.preventDefault();
+        try{
+            const response = await fetch('http://localhost:5000/api/users/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userName: newUser.userName,
+                email: newUser.email,
+                password: newUser.password
+            })
+        });
+        const resData = await response.json();
+        auth.login(resData.userId, resData.token);
+        } catch (err) {console.log(err);}
     }
-
-
-
-
 
     return(
         <Fragment>
-            <form className="registration" onSubmit={registerUser}>
+            <form className="registration" onSubmit={registerUser} >
             <h1>Create Account</h1>
                 <input className="userName"
                 onChange={handleChange}
@@ -62,7 +65,6 @@ function Register(){
                 />
                  <Button btnName="Register" 
                  type="submit"
-                 method="post"
                  ></Button>
             </form>
         </Fragment>
