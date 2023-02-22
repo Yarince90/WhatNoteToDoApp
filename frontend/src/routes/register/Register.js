@@ -1,4 +1,5 @@
 import React, { useState, Fragment, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/auth-context";
 import Button from "../../components/button/Button";
 import './register.css';
@@ -6,6 +7,7 @@ import './register.css';
 
 function Register(){
     const auth = useContext(AuthContext);
+    const navigate = useNavigate();
     const [newUser, setNewUser] = useState({
         userName: "",
         email: "",
@@ -38,6 +40,7 @@ function Register(){
         });
         const resData = await response.json();
         auth.login(resData.userId, resData.token);
+        navigate('/');
         } catch (err) {console.log(err);}
     }
 
