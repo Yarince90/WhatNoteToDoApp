@@ -1,4 +1,5 @@
 const { validationResult } = require('express-validator');
+const mongoose = require('mongoose');
 const Note = require('../models/note');
 const User = require('../models/user')
 const HttpError = require('../models/http-errors');
@@ -19,43 +20,53 @@ const getNotes = async (req, res, next) => {
 
 //Create new note
 const createNote = async (req, res, next) => {
-    const {title, content } = req.body;
+    const {title, content, creator } = req.body;
+    const errors = validationResult(req);
 
-    const createdNote = {
+    //Check for errors
+    if (!errors.isEmpty()) {
+        return next(
+          new HttpError('Invalid data was entered.', 422)
+        );
+        }
+
+    const createdNote = new Note ({
         title,
         content,
-        creator: req.userData.userId
-    }
+        creator
+    })
 
     //Look for current active user
     let user;
     try {
-        user = await User.findById(req.userData.userId);
+        user = await User.findById(creator);
     } catch (err) {
         const error = new HttpError(
-            'Unable to create note', 500
+            'Unable to create note -From find by ID', 500
           );
           return next(error);
     }
 
     if (!user) {
-        const error = new HttpError('Could not create note --Unable to locate user.', 404);
+        const error = new HttpError('Could not create note --Unable to locate user for provided Id.', 404);
         return next(error);
       }
-    
-      console.log(user);
 
       try {
         const session = await mongoose.startSession();
-        session.startSession();
+        session.startTransaction();
 
         await createdNote.save({session: session});
         user.notes.push(createdNote);
+        
         await user.save({ session: session });
         await session.commitTransaction();
+
+
       } catch (err) {
+        console.log(err);
         const error = new HttpError(
-            'Unable to create note.', 500
+            'Unable to create note -From save to user.', 500
           );
           return next(error);
       }

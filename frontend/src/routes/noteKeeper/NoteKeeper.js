@@ -1,12 +1,14 @@
-import React, { useState, Fragment } from "react";
-import './noteKeeper.css';
+import React, { useState, Fragment, useContext } from "react";
+import { AuthContext } from "../../context/auth-context";
 import Note from '../../components/note/Note';
 import Fab from '@mui/material/Fab';
 import Zoom from '@mui/material/Zoom';
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
+import './noteKeeper.css';
 
 
 function NoteKeeper() {
+  const auth = useContext(AuthContext);
   const [notes, setNotes] = useState([]);
   const [isExpanded, setExpanded] = useState(false);
   const [note, setNote] = useState({
@@ -26,11 +28,30 @@ function handleChange(e){
     });
 }
 
-//Add to Note Array 
-function addNote(newNote) {
-  setNotes(prevNotes => {
-    return [...prevNotes, newNote];
-  });
+//Add to notes DB or local array if user is not logged in
+async function addNote(newNote) {
+  //Add to DB is user is logged in
+  if(auth.isLoggedIn){
+    try{
+      fetch('http://localhost:5000/api/noteKeeper/addNote', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        title: note.title,
+        content: note.content,
+        creator: auth.userId
+      })
+      });
+    } catch (err) {console.log(err);}
+
+  } else {
+    //Add to local memory notes array 
+    setNotes(prevNotes => {
+      return [...prevNotes, newNote];
+    });
+  }
 }
 
 //Add to note array and set Create Note Area to empty
