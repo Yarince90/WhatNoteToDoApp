@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useContext } from "react";
+import React, { useState, Fragment, useContext, useEffect, useCallback } from "react";
 import { AuthContext } from "../../context/auth-context";
 import Note from '../../components/note/Note';
 import Fab from '@mui/material/Fab';
@@ -10,6 +10,7 @@ import './noteKeeper.css';
 function NoteKeeper() {
   const auth = useContext(AuthContext);
   const [notes, setNotes] = useState([]);
+  const [userNotes, loadUserNotes] = useState([]);
   const [isExpanded, setExpanded] = useState(false);
   const [note, setNote] = useState({
     title: "",
@@ -27,6 +28,33 @@ function handleChange(e){
         };
     });
 }
+
+//Load notes from DB
+const sendRequest = useCallback (async () => {
+  const response = await fetch('http://localhost:5000/api/noteKeeper', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+    }
+    })
+
+    const resData = await response.json();
+    loadUserNotes(resData.notes);
+
+    console.log(resData)
+})
+
+
+useEffect(() => {
+const fetchNotes = async () => {
+  try{
+    sendRequest();
+    
+  } catch (err) {console.log(err)}
+};
+fetchNotes();
+}, [sendRequest])
+
 
 //Add to notes DB or local array if user is not logged in
 async function addNote(newNote) {
@@ -123,13 +151,14 @@ function submitNote(event) {
       {/* Return notes array */}
       {notes.map((noteItem, index) => {
         return(
-          <Note
-            key={index}
-            id={index}
-            title={noteItem.title}
-            content={noteItem.content}
-            onDelete={deleteNote}
-          />
+          <h1>{userNotes.notes}</h1>
+          // <Note
+          // key={index}
+          // id={index}
+          // title={noteItem.title}
+          // content={noteItem.content}
+          // onDelete={deleteNote}
+          // />
         );
       })}
     </Fragment>
