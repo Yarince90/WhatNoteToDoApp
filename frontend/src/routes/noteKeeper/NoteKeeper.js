@@ -38,43 +38,44 @@ const fetchNotes = async () => {
     const resData = await sendRequest(
       'http://localhost:5000/api/noteKeeper'
       )
-      loadUserNotes(resData.notes);
+      loadUserNotes(resData.notes);  
+      
   } catch (err) {console.log(err)}
 };
 fetchNotes();
 }, [sendRequest])
 
 
-//Add to notes DB or local array if user is not logged in
-async function addNote(newNote) {
-  //Add to DB if user is logged in
-  if(auth.isLoggedIn){
-    try{
-      await fetch('http://localhost:5000/api/noteKeeper/addNote', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        title: note.title,
-        content: note.content,
-        creator: auth.userId
-      })
-      });
-      
-    } catch (err) {console.log(err);}
-
-  } else {
-    //Add to local memory notes array if no user is logged in
-    setNotes(prevNotes => {
-      return [...prevNotes, newNote];
+//Add note to DB
+async function addUserNote(note) {
+  try{
+    let noteData = JSON.stringify({
+      title: note.title,
+      content: note.content,
+      creator: auth.userId
     });
-  }
+    
+    await sendRequest('http://localhost:5000/api/noteKeeper/addNote',
+      'POST', noteData,
+      {'Content-Type': 'application/json'}
+    );
+  } catch (err) {console.log(err);}
+}
+
+//Add note to local array
+function addNote(newNote) {
+  setNotes(prevNotes => {
+    return [...prevNotes, newNote];
+  });
 }
 
 //Add to note array and set Create Note Area to empty
 function submitNote(event) {
-  addNote(note);
+  if(auth.isLoggedIn){
+    addUserNote(note)
+  } else {
+    addNote(note);
+  }
   setNote({
     title: "",
     content: ""
@@ -85,7 +86,7 @@ function submitNote(event) {
   //Delete single note
   function deleteNote(id) {
     setNotes(prevNotes => {
-      return prevNotes.filter((noteItem, index) => {
+      return prevNotes.filter((index) => {
         return index !== id;
       });
     });
