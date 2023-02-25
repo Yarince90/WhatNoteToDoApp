@@ -1,5 +1,6 @@
-import React, { useState, Fragment, useContext, useEffect, useCallback } from "react";
+import React, { useState, Fragment, useContext, useEffect } from "react";
 import { AuthContext } from "../../context/auth-context";
+import { useHttpClient } from "../../hooks/http-hook";
 import Note from '../../components/note/Note';
 import Fab from '@mui/material/Fab';
 import Zoom from '@mui/material/Zoom';
@@ -12,6 +13,7 @@ function NoteKeeper() {
   const [notes, setNotes] = useState([]);
   const [userNotes, loadUserNotes] = useState([]);
   const [isExpanded, setExpanded] = useState(false);
+  const { sendRequest } = useHttpClient();
   const [note, setNote] = useState({
     title: "",
     content: ""
@@ -30,26 +32,13 @@ function handleChange(e){
 }
 
 //Load notes from DB
-const sendRequest = useCallback (async () => {
-  const response = await fetch('http://localhost:5000/api/noteKeeper', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-    }
-    })
-
-    const resData = await response.json();
-    loadUserNotes(resData.notes);
-
-    console.log(resData)
-})
-
-
 useEffect(() => {
 const fetchNotes = async () => {
   try{
-    sendRequest();
-    
+    const resData = await sendRequest(
+      'http://localhost:5000/api/noteKeeper'
+      )
+      loadUserNotes(resData.notes);
   } catch (err) {console.log(err)}
 };
 fetchNotes();
@@ -58,10 +47,10 @@ fetchNotes();
 
 //Add to notes DB or local array if user is not logged in
 async function addNote(newNote) {
-  //Add to DB is user is logged in
+  //Add to DB if user is logged in
   if(auth.isLoggedIn){
     try{
-      fetch('http://localhost:5000/api/noteKeeper/addNote', {
+      await fetch('http://localhost:5000/api/noteKeeper/addNote', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -72,10 +61,11 @@ async function addNote(newNote) {
         creator: auth.userId
       })
       });
+      
     } catch (err) {console.log(err);}
 
   } else {
-    //Add to local memory notes array 
+    //Add to local memory notes array if no user is logged in
     setNotes(prevNotes => {
       return [...prevNotes, newNote];
     });
@@ -111,7 +101,6 @@ function submitNote(event) {
         setExpanded(false);
       }
   })
-
   function setChange() {
     isFocused = true;
   }
@@ -149,18 +138,31 @@ function submitNote(event) {
             </Zoom>
         </form>
       {/* Return notes array */}
-      {notes.map((noteItem, index) => {
+      {auth.isLoggedIn ? 
+      userNotes.map((noteItem) => {
         return(
-          <h1>{userNotes.notes}</h1>
-          // <Note
-          // key={index}
-          // id={index}
-          // title={noteItem.title}
-          // content={noteItem.content}
-          // onDelete={deleteNote}
-          // />
+          <Note
+          key={noteItem._id}
+          id={noteItem._id}
+          title={noteItem.title}
+          content={noteItem.content}
+          onDelete={deleteNote}
+          />
         );
-      })}
+      })
+      :
+      notes.map((noteItem, index) => {
+        return(
+          <Note
+          key={index}
+          id={index}
+          title={noteItem.title}
+          content={noteItem.content}
+          onDelete={deleteNote}
+          />
+        );
+      })
+    }
     </Fragment>
   )
 }
