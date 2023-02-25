@@ -18,6 +18,29 @@ const getNotes = async (req, res, next) => {
     res.json({notes: notes.map(note => note.toObject({getters: true}))});
 }
 
+//Get user Notes
+const getNotesByUserId = async (req, res, next) => {
+  const userId = req.params.uid;
+  let userNotes;
+
+  try{
+    userNotes = await Note.find({ creator: userId });
+  }catch(err){
+    const error = new HttpError(
+      'Unable to fetch notes.', 500
+    );
+    return next(error);
+  }
+
+  if(!userNotes || userNotes.length ===0){
+    return next(
+      new HttpError('Could not find Notes for the provided user id.', 404)
+    );
+  }
+  res.json({ userNotes })
+};
+
+
 //Create new note
 const createNote = async (req, res, next) => {
     const {title, content, creator } = req.body;
@@ -75,4 +98,5 @@ const createNote = async (req, res, next) => {
 }
 
 exports.getNotes = getNotes;
+exports.getNotesByUserId = getNotesByUserId;
 exports.createNote = createNote;
