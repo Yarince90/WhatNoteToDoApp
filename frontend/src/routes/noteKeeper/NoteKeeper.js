@@ -20,7 +20,7 @@ function NoteKeeper() {
 });
 let isFocused = false;
   
-//Handle Create Note Area text change  
+//Handle Create Note Area text change  =-----------------------------------------
 function handleChange(e){
     const{ name, value } = e.target;
     setNote(prevNote => {
@@ -31,22 +31,20 @@ function handleChange(e){
     });
 }
 
-//Load notes from DB
+//Load user notes from DB =---------------------------------------------------------
 useEffect(() => {
 const fetchNotes = async () => {
   try{
     const resData = await sendRequest(
-      'http://localhost:5000/api/noteKeeper'
+      `http://localhost:5000/api/noteKeeper/user/${auth.userId}`
       )
-      loadUserNotes(resData.notes);  
-      
+      loadUserNotes(resData.userNotes);
   } catch (err) {console.log(err)}
 };
 fetchNotes();
-}, [sendRequest])
+}, [sendRequest, auth.userId]);
 
-
-//Add note to DB
+//Add note to DB  =---------------------------------------------------------
 async function addUserNote(note) {
   try{
     let noteData = JSON.stringify({
@@ -59,6 +57,10 @@ async function addUserNote(note) {
       'POST', noteData,
       {'Content-Type': 'application/json'}
     );
+
+    loadUserNotes(prevNotes => {
+      return [...prevNotes, note];
+    });
   } catch (err) {console.log(err);}
 }
 
@@ -68,8 +70,7 @@ function addNote(newNote) {
     return [...prevNotes, newNote];
   });
 }
-
-//Add to note array and set Create Note Area to empty
+//Add Notes and set Create Note Area to empty
 function submitNote(event) {
   if(auth.isLoggedIn){
     addUserNote(note)

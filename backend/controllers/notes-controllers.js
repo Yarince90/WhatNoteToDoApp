@@ -4,20 +4,6 @@ const Note = require('../models/note');
 const User = require('../models/user')
 const HttpError = require('../models/http-errors');
 
-//Get all notes
-// const getNotes = async (req, res, next) => {
-//     let notes;
-//     try {
-//         notes = await Note.find();
-//     } catch (err) {
-//         const error = new HttpError(
-//             'Failed to get all notes.', 500
-//           );
-//           return next(error);
-//     }
-//     res.json({notes: notes.map(note => note.toObject({getters: true}))});
-// }
-
 //Get Notes by user ID
 const getNotesByUserId = async (req, res, next) => {
   const userId = req.params.uid;
@@ -32,11 +18,6 @@ const getNotesByUserId = async (req, res, next) => {
     return next(error);
   }
 
-  if(!userNotes || userNotes.length ===0){
-    return next(
-      new HttpError('Could not find Notes for the provided user id.', 404)
-    );
-  }
   res.json({ userNotes })
 };
 
@@ -96,7 +77,7 @@ const createNote = async (req, res, next) => {
 
     res.status(201).json(createdNote);
 }
-//editNote
+//Edit Note
 const editNote = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -159,7 +140,6 @@ const deleteNote = async (req, res, next) => {
   res.status(200).json({message: 'Note Deleted.'});
 }
 
-// exports.getNotes = getNotes;
 exports.getNotesByUserId = getNotesByUserId;
 exports.createNote = createNote;
 exports.editNote = editNote;
