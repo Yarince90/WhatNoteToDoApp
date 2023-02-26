@@ -5,20 +5,20 @@ const User = require('../models/user')
 const HttpError = require('../models/http-errors');
 
 //Get all notes
-const getNotes = async (req, res, next) => {
-    let notes;
-    try {
-        notes = await Note.find();
-    } catch (err) {
-        const error = new HttpError(
-            'Failed to get all notes.', 500
-          );
-          return next(error);
-    }
-    res.json({notes: notes.map(note => note.toObject({getters: true}))});
-}
+// const getNotes = async (req, res, next) => {
+//     let notes;
+//     try {
+//         notes = await Note.find();
+//     } catch (err) {
+//         const error = new HttpError(
+//             'Failed to get all notes.', 500
+//           );
+//           return next(error);
+//     }
+//     res.json({notes: notes.map(note => note.toObject({getters: true}))});
+// }
 
-//Get user Notes
+//Get Notes by user ID
 const getNotesByUserId = async (req, res, next) => {
   const userId = req.params.uid;
   let userNotes;
@@ -96,7 +96,71 @@ const createNote = async (req, res, next) => {
 
     res.status(201).json(createdNote);
 }
+//editNote
+const editNote = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(
+      new HttpError('Invalid data was entered.', 422)
+    );
+  }
 
-exports.getNotes = getNotes;
+  const { title, content } = req.body;
+  const noteId = req.params.nId;
+
+  let note;
+  try {
+    note = await Note.findById(noteId);
+  } catch(err) {
+    const error = new HttpError(
+      'Could not update note.', 500
+    );
+    return next(error);
+  }
+
+  note.title = title;
+  note.content = content;
+
+  try{
+    await note.save();
+  } catch(err) {
+    const error = new HttpError(
+      'Could not update note.', 500
+    );
+    return next(error);
+  }
+
+  res.status(200).json({ note: note.toObject({ getters: true })});
+}
+
+//Delete note
+const deleteNote = async (req, res, next) => {
+  const noteId = req.params.nId;
+
+  let note;
+  try{
+    note = await Note.findById(noteId);
+  } catch(err){
+    const error = new HttpError(
+      'Unable to delete note.', 500
+    );
+    return next(error);
+  }
+
+  try {
+    await note.remove();
+  } catch(err) {
+    const error = new HttpError(
+      'Unable to delete note.', 500
+    );
+    return next(error);
+  }
+
+  res.status(200).json({message: 'Note Deleted.'});
+}
+
+// exports.getNotes = getNotes;
 exports.getNotesByUserId = getNotesByUserId;
 exports.createNote = createNote;
+exports.editNote = editNote;
+exports.deleteNote = deleteNote;

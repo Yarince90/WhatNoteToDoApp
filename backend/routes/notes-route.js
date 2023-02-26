@@ -3,9 +3,7 @@ const router = express.Router();
 const { check } = require('express-validator')
 const notesControllers = require('../controllers/notes-controllers');
 
-
-//get rid of get all notes 
-router.get('/', notesControllers.getNotes);
+// router.get('/', notesControllers.getNotes);
 
 router.get('/user/:uid', notesControllers.getNotesByUserId)
 
@@ -17,5 +15,16 @@ router.post(
     ],
     notesControllers.createNote
 );
+
+router.patch(
+    '/user/:nId',
+    [
+        check('title').isLength({max: 16}), 
+        check('content').not().isEmpty()
+    ],
+    notesControllers.editNote
+)
+
+router.delete('/user/:nId', notesControllers.deleteNote);
 
 module.exports = router;
