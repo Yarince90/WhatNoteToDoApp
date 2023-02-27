@@ -18,7 +18,7 @@ const getNotesByUserId = async (req, res, next) => {
     return next(error);
   }
 
-  res.json({ userNotes })
+  res.json({ userNotes });
 };
 
 
@@ -116,9 +116,10 @@ const editNote = async (req, res, next) => {
 
 //Delete note
 const deleteNote = async (req, res, next) => {
-  const noteId = req.params.nId;
+  const noteId = req.params.nid;
 
   let note;
+
   try{
     note = await Note.findById(noteId);
   } catch(err){
@@ -137,7 +138,20 @@ const deleteNote = async (req, res, next) => {
     return next(error);
   }
 
-  res.status(200).json({message: 'Note Deleted.'});
+
+  //return notes array
+  const userId = note.creator;
+  let notes;
+  try {
+      notes = await Note.find({ creator: userId });
+  } catch (err) {
+      const error = new HttpError(
+          'Failed to get all notes.', 500
+        );
+        return next(error);
+  }
+
+  res.json({ notes });
 }
 
 exports.getNotesByUserId = getNotesByUserId;

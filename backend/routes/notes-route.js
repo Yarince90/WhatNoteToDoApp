@@ -23,6 +23,6 @@ router.patch(
     notesControllers.editNote
 )
 
-router.delete('/user/:nId', notesControllers.deleteNote);
+router.delete('/user/:nid', notesControllers.deleteNote);
 
 module.exports = router;

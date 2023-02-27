@@ -7,7 +7,6 @@ import Zoom from '@mui/material/Zoom';
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import './noteKeeper.css';
 
-
 function NoteKeeper() {
   const auth = useContext(AuthContext);
   const [notes, setNotes] = useState([]);
@@ -83,9 +82,26 @@ function submitNote(event) {
   });
   event.preventDefault();
 }
+// Delete Note from DB =---------------------------------------------------------
+async function deleteUserNote(id) {
+  try {
+    const resData = await sendRequest(
+      `http://localhost:5000/api/noteKeeper/user/${id}`,
+    'DELETE', null,
+    {'Content-Type': 'application/json'}
+  );
+  
+  console.log(resData.notes);
+  loadUserNotes(resData.notes);
+
+  } catch (err) {console.log(err);}
+}
 
   //Delete single note
   function deleteNote(id) {
+    if(auth.isLoggedIn){
+      deleteUserNote(id);
+    }
     setNotes(prevNotes => {
       return prevNotes.filter((index) => {
         return index !== id;
