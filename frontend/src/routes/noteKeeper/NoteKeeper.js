@@ -9,7 +9,6 @@ import './noteKeeper.css';
 
 function NoteKeeper() {
   const auth = useContext(AuthContext);
-  const [notes, setNotes] = useState([]);
   const [userNotes, loadUserNotes] = useState([]);
   const [isExpanded, setExpanded] = useState(false);
   const { sendRequest } = useHttpClient();
@@ -44,38 +43,23 @@ fetchNotes();
 }, [sendRequest, auth.userId]);
 
 //Add note to DB  =-----------------------------------------------------------------
-async function addUserNote(note) {
-  try{
-    let noteData = JSON.stringify({
-      title: note.title,
-      content: note.content,
-      creator: auth.userId
-    });
-    
-    await sendRequest('http://localhost:5000/api/noteKeeper/addNote',
-      'POST', noteData,
-      {'Content-Type': 'application/json'}
-    );
-
-    loadUserNotes(prevNotes => {
-      return [...prevNotes, note];
-    });
-  } catch (err) {console.log(err);}
-}
-
-//Add note to local array
-function addNote(newNote) {
-  setNotes(prevNotes => {
-    return [...prevNotes, newNote];
-  });
-}
-//Add Notes and set Create Note Area to empty
-function submitNote(event) {
-  if(auth.isLoggedIn){
-    addUserNote(note)
-  } else {
-    addNote(note);
-  }
+async function submitNote(event) {
+    try{
+      let noteData = JSON.stringify({
+        title: note.title,
+        content: note.content,
+        creator: auth.userId
+      });
+      
+      await sendRequest('http://localhost:5000/api/noteKeeper/addNote',
+        'POST', noteData,
+        {'Content-Type': 'application/json'}
+      );
+  
+      loadUserNotes(prevNotes => {
+        return [...prevNotes, note];
+      });
+    } catch (err) {console.log(err);}
   setNote({
     title: "",
     content: ""
@@ -84,22 +68,15 @@ function submitNote(event) {
 }
 
 // Delete Note from DB =---------------------------------------------------------
-  async function deleteNote(id) {
-    if(auth.isLoggedIn){
-      try {
-        const resData = await sendRequest(
-          `http://localhost:5000/api/noteKeeper/user/${id}`,
-        'DELETE', null,
-        {'Content-Type': 'application/json'}
-      );
-      loadUserNotes(resData.notes);
-      } catch (err) {console.log(err);}
-    }
-    setNotes(prevNotes => {
-      return prevNotes.filter((index) => {
-        return index !== id;
-      });
-    });
+  async function deleteNote(id) {  
+    try {
+      const resData = await sendRequest(
+        `http://localhost:5000/api/noteKeeper/user/${id}`,
+      'DELETE', null,
+      {'Content-Type': 'application/json'}
+    );
+    loadUserNotes(resData.notes);
+    } catch (err) {console.log(err);}
   }
 
   // Handle Focus for Create Note area (expand and retract rows) =------------------
@@ -147,10 +124,8 @@ function submitNote(event) {
                 <AddCircleRoundedIcon />
               </Fab>
             </Zoom>
-        </form>
-      {/* Return notes array */}
-      {auth.isLoggedIn ? 
-      userNotes.map((noteItem) => {
+        </form>      
+      {userNotes.map((noteItem) => {
         return(
           <Note
           key={noteItem._id}
@@ -160,20 +135,8 @@ function submitNote(event) {
           onDelete={deleteNote}
           />
         );
-      })
-      :
-      notes.map((noteItem, index) => {
-        return(
-          <Note
-          key={index}
-          id={index}
-          title={noteItem.title}
-          content={noteItem.content}
-          onDelete={deleteNote}
-          />
-        );
-      })
-    }
+      })}
+    
     </Fragment>
   )
 }

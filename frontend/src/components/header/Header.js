@@ -13,19 +13,21 @@ function Header() {
                     <div className="link-item-01">
                         <Link className="navLink" to='/'><h1>Home</h1></Link>
                     </div>
-                    <div className="link-item-02">
-                        <Link className="navLink" to='/noteKeeper'><h1>Note Keeper</h1></Link>
-                        <Link className="navLink" to='/toDoList'><h1>To Do List</h1></Link>
-                    </div>
                     {!auth.isLoggedIn ? 
                         <div className="link-item-03">
                         <Link className="navLink" to='/logIn'><h1>Login</h1></Link>
                         <Link className="navLink" to='/register'><h1>Create Account</h1></Link>
                     </div>
                      :
-                    <div className="link-item-03">
-                        <Link className="navLink"><h1 onClick={auth.logout} >Log Out</h1></Link>
-                    </div>
+                     <Fragment>
+                        <div className="link-item-02">
+                            <Link className="navLink" to='/noteKeeper'><h1>Note Keeper</h1></Link>
+                            <Link className="navLink" to='/toDoList'><h1>To Do List</h1></Link>
+                        </div>
+                        <div className="link-item-03">
+                            <Link className="navLink" to='/'><h1 onClick={auth.logout} >Log Out</h1></Link>
+                        </div>
+                    </Fragment>
                     }
                 </div>
             </header>

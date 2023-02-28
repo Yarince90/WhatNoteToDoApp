@@ -9,11 +9,11 @@ import NoteKeeper from "./routes/noteKeeper/NoteKeeper";
 import ToDoList from "./routes/toDoList/ToDoList";
 import LogIn from "./routes/login/LogIn";
 import Register from "./routes/register/Register";
+import PrivateRoutes from "./utils/PrivateRoutes";
 
 
 function App() {
   const { token, login, logout, userId } = useAuth();
-
 
   return (
     <div className="App">
@@ -28,8 +28,10 @@ function App() {
       <Routes>
         <Route path="/" element={<Header />}>
           <Route index element={<Home/>}/>
-          <Route path="noteKeeper" element={<NoteKeeper/>}/>
-          <Route path="toDoList" element={<ToDoList/>}/>
+          <Route element={<PrivateRoutes />}>
+            <Route path="noteKeeper" element={<NoteKeeper/>}/>
+            <Route path="toDoList" element={<ToDoList/>}/>
+          </Route>
           <Route path="logIn" element={<LogIn/>}/>
           <Route path="register" element={<Register/>}/>
         </Route>

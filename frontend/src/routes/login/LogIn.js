@@ -42,12 +42,6 @@ function LogIn(){
         } catch (err) {console.log(err);}
     }
 
-
-
-
-
-
-
     return(
         <Fragment>
             <form className="logIn" onSubmit={loginUser} >
