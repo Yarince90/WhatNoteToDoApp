@@ -119,7 +119,6 @@ const deleteNote = async (req, res, next) => {
   const noteId = req.params.nid;
 
   let note;
-
   try{
     note = await Note.findById(noteId);
   } catch(err){
@@ -138,8 +137,7 @@ const deleteNote = async (req, res, next) => {
     return next(error);
   }
 
-
-  //return notes array
+  //return notes array for active user
   const userId = note.creator;
   let notes;
   try {

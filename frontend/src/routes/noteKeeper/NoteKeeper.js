@@ -43,7 +43,7 @@ const fetchNotes = async () => {
 fetchNotes();
 }, [sendRequest, auth.userId]);
 
-//Add note to DB  =---------------------------------------------------------
+//Add note to DB  =-----------------------------------------------------------------
 async function addUserNote(note) {
   try{
     let noteData = JSON.stringify({
@@ -82,25 +82,18 @@ function submitNote(event) {
   });
   event.preventDefault();
 }
+
 // Delete Note from DB =---------------------------------------------------------
-async function deleteUserNote(id) {
-  try {
-    const resData = await sendRequest(
-      `http://localhost:5000/api/noteKeeper/user/${id}`,
-    'DELETE', null,
-    {'Content-Type': 'application/json'}
-  );
-  
-  console.log(resData.notes);
-  loadUserNotes(resData.notes);
-
-  } catch (err) {console.log(err);}
-}
-
-  //Delete single note
-  function deleteNote(id) {
+  async function deleteNote(id) {
     if(auth.isLoggedIn){
-      deleteUserNote(id);
+      try {
+        const resData = await sendRequest(
+          `http://localhost:5000/api/noteKeeper/user/${id}`,
+        'DELETE', null,
+        {'Content-Type': 'application/json'}
+      );
+      loadUserNotes(resData.notes);
+      } catch (err) {console.log(err);}
     }
     setNotes(prevNotes => {
       return prevNotes.filter((index) => {
@@ -109,7 +102,7 @@ async function deleteUserNote(id) {
     });
   }
 
-  // Handle Focus for Create Note area (expand and retract rows)
+  // Handle Focus for Create Note area (expand and retract rows) =------------------
   document.body.addEventListener('click', function(e){
       if (e.target.classList.contains('createNote')){
         isFocused = true;
