@@ -46,7 +46,7 @@ const createNote = async (req, res, next) => {
         user = await User.findById(creator);
     } catch (err) {
         const error = new HttpError(
-            'Unable to create note -From find by ID', 500
+            'Unable to create note -From find user by ID', 500
           );
           return next(error);
     }
@@ -56,24 +56,25 @@ const createNote = async (req, res, next) => {
         return next(error);
       }
 
-      try {
-        const session = await mongoose.startSession();
-        session.startTransaction();
+    //Attempt to create new note
+    try {
+      const session = await mongoose.startSession();
+      session.startTransaction();
 
-        await createdNote.save({session: session});
-        user.notes.push(createdNote);
-        
-        await user.save({ session: session });
-        await session.commitTransaction();
+      await createdNote.save({ session: session });
+      user.notes.push(createdNote);
+      
+      await user.save({ session: session });
+      await session.commitTransaction();
 
 
-      } catch (err) {
-        console.log(err);
-        const error = new HttpError(
-            'Unable to create note -From save to user.', 500
-          );
-          return next(error);
-      }
+    } catch (err) {
+      console.log(err);
+      const error = new HttpError(
+          'Unable to create note -From save to user.', 500
+        );
+        return next(error);
+    }
 
     res.status(201).json(createdNote);
 }

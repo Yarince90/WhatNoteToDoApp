@@ -3,7 +3,7 @@ const router = express.Router();
 const { check } = require('express-validator')
 const notesControllers = require('../controllers/notes-controllers');
 
-router.get('/user/:uid', notesControllers.getNotesByUserId)
+router.get('/user/:uid', notesControllers.getNotesByUserId);
 
 router.post(
     '/addNote', 
@@ -21,7 +21,7 @@ router.patch(
         check('content').not().isEmpty()
     ],
     notesControllers.editNote
-)
+);
 
 router.delete('/user/:nid', notesControllers.deleteNote);
 
