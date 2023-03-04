@@ -15,4 +15,6 @@ router.post(
     listsControllers.createList
 );
 
+router.delete('/user/:lid', listsControllers.deleteList);
+
 module.exports = router;

@@ -78,5 +78,45 @@ const createList = async (req, res, next) => {
     res.status(201).json(createdList);
 }
 
+//Delete List
+const deleteList = async (req, res, next) => {
+    const listId = req.params.lid;
+
+    let list;
+    try{
+        list = await List.findById(listId);
+    }catch(err){
+        const error = new HttpError(
+            'Unable to delete List.', 500
+          );
+          return next(error);
+    }
+
+    try{
+        await list.remove()
+    } catch(err) {
+        const error = new HttpError(
+          'Unable to delete List.', 500
+        );
+        return next(error);
+      }
+
+      //return array of lists for active user
+      const userId = list.creator
+      let lists;
+
+      try {
+        lists = await List.find({ creator: userId });
+    } catch (err) {
+        const error = new HttpError(
+            'Failed to get all Lists.', 500
+          );
+          return next(error);
+    }
+  
+    res.json({ lists });
+}
+
 exports.createList = createList;
 exports.getLists = getLists;
+exports.deleteList = deleteList;
