@@ -93,7 +93,7 @@ const deleteList = async (req, res, next) => {
     }
 
     try{
-        await list.remove()
+        await list.remove();
     } catch(err) {
         const error = new HttpError(
           'Unable to delete List.', 500
@@ -102,7 +102,7 @@ const deleteList = async (req, res, next) => {
       }
 
       //return array of lists for active user
-      const userId = list.creator
+      const userId = list.creator;
       let lists;
 
       try {

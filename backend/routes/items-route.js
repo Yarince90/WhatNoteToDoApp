@@ -3,6 +3,7 @@ const router = express.Router();
 const { check } = require('express-validator');
 const itemsController = require('../controllers/items-controller');
 
+
 router.get('/user/:lid', itemsController.getItems);
 
 router.post(
@@ -12,5 +13,7 @@ router.post(
     ],
     itemsController.createItem
 );
+
+router.delete('/user/:iid', itemsController.deleteItem);
 
 module.exports = router;

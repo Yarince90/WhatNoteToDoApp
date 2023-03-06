@@ -43,11 +43,12 @@ const createItem = async (req, res, next) => {
     //Look for current active list
     let list;
     try{
-        list = await List.findById({ creator });
+        list = await List.findById( creator );
     } catch (err) {
         const error = new HttpError(
             'Unable to create Item -From find list by ID', 500
           );
+
           return next(error);
     }
 
@@ -92,8 +93,31 @@ const deleteItem = async (req, res, next) => {
           return next(error);
     }
 
- 
+    try{
+        await item.remove();
+    }catch(err){
+        const error = new HttpError(
+            'Unable to delete item.', 500
+          );
+          return next(error);
+    }
+
+    //return remainder items
+    const listId = item.creator;
+    let items;
+
+    try{
+        items = await Item.find({ creator: listId });
+    }catch(err){
+        const error = new HttpError(
+            'Failed to get all items for current list.', 500
+          );
+          return next(error);
+    }
+
+    res.json({ items });
 }
 
 exports.createItem = createItem;
 exports.getItems = getItems;
+exports.deleteItem = deleteItem;
