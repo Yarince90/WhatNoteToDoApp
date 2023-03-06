@@ -61,10 +61,10 @@ const createList = async (req, res, next) => {
         const session = await mongoose.startSession();
         session.startTransaction();
 
-        await createdList.save({ session: session })
+        await createdList.save({ session: session });
         user.lists.push(createdList);
 
-        await user.save({ session: session })
+        await user.save({ session: session });
         await session.commitTransaction();
 
     } catch (err){

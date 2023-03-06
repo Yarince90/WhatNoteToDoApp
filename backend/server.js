@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const usersRoutes = require('./routes/users-route');
 const notesRoute = require('./routes/notes-route');
 const listsRoute = require('./routes/toDoList-route');
+const itemRoute = require('./routes/items-route');
 const HttpError = require('./models/http-errors');
 
 const app = express();
@@ -27,6 +28,7 @@ app.use((req, res, next) => {
 app.use('/api/users', usersRoutes);
 app.use('/api/noteKeeper', notesRoute);
 app.use('/api/toDoList', listsRoute);
+app.use('/api/item', itemRoute);
 
 
 // Error handling
