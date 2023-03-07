@@ -11,9 +11,7 @@ export const useHttpClient = () => {
                 headers
             });
             const resData = await response.json();
-            
             return resData;
-
         } catch (err){console.log(err)}
 
     },[]);

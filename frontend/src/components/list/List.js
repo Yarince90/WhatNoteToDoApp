@@ -9,6 +9,20 @@ function List(props) {
     const { sendRequest } = useHttpClient();
     const [isExpanded, setExpanded] = useState(false);
     const [listItems, loadItems] = useState([]);
+    const [item, setItem] = useState({
+        itemName: ""
+     });
+
+    //Handle change for add add new item
+    function handleChange(e){
+        const{ name, value } = e.target;
+        setItem(prevItem => {
+            return {
+                ...prevItem,
+                [name]: value
+            };
+        });
+    }
 
     function handleClick() {
         isExpanded ?
@@ -18,17 +32,53 @@ function List(props) {
         loadListItems(props.id);
     }
 
-    //Load List Items =---------------------------------------------------------
-async function loadListItems(id) {
-    try {
-        const resData = await sendRequest(
-            `http://localhost:5000/api/item/user/${id}`
-        );
-        loadItems(resData.listItems);
-        console.log(resData.listItems);
-    } catch (err) {console.log(err);}
-}
+    //handle addNote?
 
+    //Load List Items =---------------------------------------------------------
+    async function loadListItems(id) {
+        try {
+            const resData = await sendRequest(
+                `http://localhost:5000/api/item/user/${id}`
+            );
+            loadItems(resData.listItems);
+        } catch (err) {console.log(err);}
+    }
+
+    //Add new item to list
+    async function addItem(event) {
+        try{
+            let itemData = JSON.stringify({
+                itemName: item.itemName,
+                creator: props.id
+            });
+
+            await sendRequest('http://localhost:5000/api/item/addItem',
+            'POST', itemData,
+            {'Content-Type': 'application/json'}
+            );
+
+            loadItems(prevItems => {
+                return [...prevItems, item];
+            });
+        } catch (err) {console.log(err);}
+       
+        setItem({
+            itemName: ""
+        });
+        event.preventDefault();
+    }
+
+    //Delete item from list
+    async function deleteItem(id) {
+        try {
+            const resData = await sendRequest(
+                `http://localhost:5000/api/item/user/${id}`,
+                'DELETE', null,
+                {'Content-Type': 'application/json'}
+            );
+            loadItems(resData.items);
+        }catch(err){console.log(err);}
+    }
 
     return(
         <div className="toDoList">
@@ -41,18 +91,30 @@ async function loadListItems(id) {
                         key={items._id}
                         id={items._id}
                         itemName={items.itemName}
+                        onDelete={deleteItem}
                         />
                     )
                 })}
-             </Fragment>
+                <form>
+                    <input className="addNewItem"
+                        name="itemName"
+                        onChange={handleChange}
+                        value={item.itemName}
+                        placeholder="Add new Item"
+                    />
+                    <div className="addItem" onClick={addItem}>
+                        Add
+                    </div>
+                </form>
+                </Fragment>
             }
-            <button onClick={handleClick}>
+             <button onClick={handleClick}>
                 {!isExpanded ? 
                     <ExpandMoreIcon /> 
                     :
                     <ExpandLessIcon />
                 }
-            </button>
+             </button>
         </div>
     )
 }

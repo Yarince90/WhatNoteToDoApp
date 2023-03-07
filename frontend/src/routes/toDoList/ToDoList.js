@@ -25,7 +25,6 @@ function ToDoList() {
     return(
         <Fragment>
             {userLists.map((listItem) => {
-                console.log(userLists[0].items)
                 return(
                     <List 
                     key={listItem._id}

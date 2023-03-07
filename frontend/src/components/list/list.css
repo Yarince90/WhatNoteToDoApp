@@ -11,12 +11,6 @@
     font-size: 1.1em;
     margin-bottom: 6px;
   }
-  .toDoList p {
-    font-size: 1.1em;
-    margin-bottom: 10px;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-  }
   
   .toDoList button {
     position: relative;
@@ -29,6 +23,21 @@
     height: 36px;
     cursor: pointer;
     outline: none;
+    padding-top: 10px;
     transform: scale(1.2);
   }
+
+  .addNewItem {
+  position: relative;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  }
   
+  .addItem {
+    position: relative;
+    float: right;
+    margin-right: 10px;
+    color: #f5ba13;
+    cursor: pointer;
+  }
