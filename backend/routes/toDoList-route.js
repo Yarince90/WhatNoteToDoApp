@@ -9,8 +9,7 @@ router.get('/user/:uid', listsControllers.getLists);
 router.post(
     '/addList',
     [
-        check('title').not().isEmpty(),
-        check('items').isLength({max: 20})
+        check('title').not().isEmpty()
     ],
     listsControllers.createList
 );

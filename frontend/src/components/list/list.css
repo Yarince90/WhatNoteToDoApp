@@ -1,4 +1,5 @@
 .toDoList {
+  position: relative;
     background: #fff;
     border-radius: 7px;
     box-shadow: 0 2px 5px #ccc;
@@ -40,4 +41,19 @@
     margin-right: 10px;
     color: #f5ba13;
     cursor: pointer;
+  }
+
+  .deleteButton {
+    position: absolute;
+    bottom: 0;
+    padding-bottom: 0;
+    color: #f5ba13;
+    background-color: #fff;
+    border: none;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    outline: none;
+    padding-top: 10px;
+    transform: scale(0.9);
   }

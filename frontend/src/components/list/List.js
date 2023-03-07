@@ -32,8 +32,6 @@ function List(props) {
         loadListItems(props.id);
     }
 
-    //handle addNote?
-
     //Load List Items =---------------------------------------------------------
     async function loadListItems(id) {
         try {
@@ -44,7 +42,7 @@ function List(props) {
         } catch (err) {console.log(err);}
     }
 
-    //Add new item to list
+    //Add new item to list =---------------------------------------------------------
     async function addItem(event) {
         try{
             let itemData = JSON.stringify({
@@ -80,6 +78,11 @@ function List(props) {
         }catch(err){console.log(err);}
     }
 
+    //Delete List 
+    function handleDeleteList() {
+        props.onDelete(props.id);
+    }
+
     return(
         <div className="toDoList">
             <h1>{props.title}</h1>
@@ -106,6 +109,9 @@ function List(props) {
                         Add
                     </div>
                 </form>
+                <div className="deleteButton" onClick={handleDeleteList}>
+                    Delete List
+                </div>
                 </Fragment>
             }
              <button onClick={handleClick}>
