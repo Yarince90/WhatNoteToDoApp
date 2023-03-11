@@ -4,7 +4,7 @@ const { check } = require('express-validator');
 const itemsController = require('../controllers/items-controller');
 
 
-router.get('/user/:lid', itemsController.getItems);
+router.get('/list/:lid', itemsController.getItems);
 
 router.post(
     '/addItem',
@@ -14,6 +14,6 @@ router.post(
     itemsController.createItem
 );
 
-router.delete('/user/:iid', itemsController.deleteItem);
+router.delete('/list/:iid', itemsController.deleteItem);
 
 module.exports = router;

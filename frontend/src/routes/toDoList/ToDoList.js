@@ -36,7 +36,7 @@ function handleChange(e){
             try{
                 const resData = await sendRequest(
                     `http://localhost:5000/api/toDoList/user/${auth.userId}`
-                )
+                )                
                 loadUserLists(resData.userLists);
             }catch(err){console.log(err)}
         };
@@ -57,9 +57,16 @@ function handleChange(e){
             {'Content-Type': 'application/json'}
             );
 
-            loadUserLists(prevList => {
-                return [...prevList, list];
-            });
+           
+            //Re-Load user lists
+            try{
+                const resData = await sendRequest(
+                    `http://localhost:5000/api/toDoList/user/${auth.userId}`
+                )                
+                loadUserLists(resData.userLists);
+            }catch(err){console.log(err)}
+
+
         }catch(err){console.log(err);}
         setList({
             title: ""
@@ -74,8 +81,8 @@ function handleChange(e){
             `http://localhost:5000/api/toDoList/user/${id}`,
             'DELETE', null,
             {'Content-Type': 'application/json'}
-           );
-           loadUserLists(resData.userLists);
+           );           
+           loadUserLists(resData.lists);
         } catch (err) {console.log(err);}
     }
 
@@ -122,7 +129,7 @@ function handleChange(e){
                     key={listItem._id}
                     id={listItem._id}
                     title={listItem.title}
-                    onDelete={deleteList}
+                    onDelete={deleteList}                    
                     />
                 )
             })}

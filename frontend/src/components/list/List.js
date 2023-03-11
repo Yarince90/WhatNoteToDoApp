@@ -36,7 +36,7 @@ function List(props) {
     async function loadListItems(id) {
         try {
             const resData = await sendRequest(
-                `http://localhost:5000/api/item/user/${id}`
+                `http://localhost:5000/api/item/list/${id}`
             );
             loadItems(resData.listItems);
         } catch (err) {console.log(err);}
@@ -66,11 +66,11 @@ function List(props) {
         event.preventDefault();
     }
 
-    //Delete item from list
+    //Delete item from list =---------------------------------------------------------
     async function deleteItem(id) {
         try {
             const resData = await sendRequest(
-                `http://localhost:5000/api/item/user/${id}`,
+                `http://localhost:5000/api/item/list/${id}`,
                 'DELETE', null,
                 {'Content-Type': 'application/json'}
             );
@@ -78,7 +78,7 @@ function List(props) {
         }catch(err){console.log(err);}
     }
 
-    //Delete List 
+    //Delete List =---------------------------------------------------------
     function handleDeleteList() {
         props.onDelete(props.id);
     }
@@ -88,7 +88,7 @@ function List(props) {
             <h1>{props.title}</h1>
             {isExpanded &&
              <Fragment>
-                {listItems.map((items) => {
+                {listItems.map((items) => {                    
                     return(
                         <ListItem 
                         key={items._id}
