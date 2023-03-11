@@ -7,6 +7,7 @@ import './login.css';
 function LogIn(){
     const auth = useContext(AuthContext);
     const navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = useState(false);
     const [user, setUser] = useState({
         email: "",
         password: ""
@@ -37,8 +38,14 @@ function LogIn(){
             })
         });
         const resData = await response.json();
-        auth.login(resData.userId, resData.token);
-        navigate('/');
+
+        if(response.ok){
+            auth.login(resData.userId, resData.token);
+            setErrorMessage(false);
+            navigate('/');        
+        } else {
+            setErrorMessage(true);
+        }        
         } catch (err) {console.log(err);}
     }
 
@@ -47,17 +54,20 @@ function LogIn(){
             <form className="logIn" onSubmit={loginUser} >
             <h1>Log In</h1>
                <input className="email"
+                type="email"
                 onChange={handleChange}
                 name="email"
                 value={user.email}
                 placeholder="Email"
                 />
                 <input className="password"
+                type="password"
                 onChange={handleChange}
                 name="password"
                 value={user.password}
                 placeholder="Password"
                 />
+                {errorMessage && <p className="errorMessage">Invalid Credentials. Please try again</p>}
                 <Button btnName="Log In"
                 type="submit"
                 ></Button>

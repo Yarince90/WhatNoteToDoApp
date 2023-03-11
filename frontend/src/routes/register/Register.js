@@ -8,10 +8,12 @@ import './register.css';
 function Register(){
     const auth = useContext(AuthContext);
     const navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = useState(false);
     const [newUser, setNewUser] = useState({
         userName: "",
         email: "",
-        password: ""
+        password: "",
+        confirmPassword: ""
     });
 
     function handleChange(e){
@@ -23,49 +25,74 @@ function Register(){
             };
         });
     }
+    
     //Send new user info to backend
     async function registerUser (event) {
         event.preventDefault();
-        try{
-            const response = await fetch('http://localhost:5000/api/users/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                userName: newUser.userName,
-                email: newUser.email,
-                password: newUser.password
-            })
-        });
-        const resData = await response.json();
-        auth.login(resData.userId, resData.token);
-        navigate('/');
-        } catch (err) {console.log(err);}
+
+        if(newUser.password === newUser.confirmPassword){
+            setErrorMessage(false);
+            try{
+                const response = await fetch('http://localhost:5000/api/users/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userName: newUser.userName,
+                    email: newUser.email,
+                    password: newUser.password
+                })
+            });
+            const resData = await response.json();
+
+            if(response.ok){
+                auth.login(resData.userId, resData.token);
+                setErrorMessage(false);
+                navigate('/');
+            } else {
+                setErrorMessage(true);
+            }
+           
+            } catch (err) {console.log(err);}
+        } else {
+            setErrorMessage(true);
+        }
     }
 
     return(
         <Fragment>
             <form className="registration" onSubmit={registerUser} >
-            <h1>Create Account</h1>
-                <input className="userName"
-                onChange={handleChange}
-                name="userName"
-                value={newUser.userName}
-                placeholder="Username"
-                />
+            <h1>Create Account</h1>                
                 <input className="email"
+                type="email"
                 onChange={handleChange}
                 name="email"
                 value={newUser.email}
                 placeholder="Email"
                 />
+                <input className="userName"
+                type="input"
+                onChange={handleChange}
+                name="userName"
+                value={newUser.userName}
+                placeholder="Username"
+                />
                 <input className="password"
+                type="password"
                 onChange={handleChange}
                 name="password"
                 value={newUser.password}
                 placeholder="Password"
                 />
+                <input className="password"
+                type="password"
+                onChange={handleChange}
+                name="confirmPassword"
+                value={newUser.confirmPassword}
+                placeholder="Confirm Password"
+                />
+                {errorMessage && <p className="errorMessage">Passwords do not match. Please try again</p>}
                  <Button btnName="Register" 
                  type="submit"
                  ></Button>

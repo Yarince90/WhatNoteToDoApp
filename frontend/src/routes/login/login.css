@@ -21,3 +21,7 @@ form.logIn input {
     column-gap: 15px;
     
 }
+
+.errorMessage {
+    color: rgb(255, 0, 0);
+}
